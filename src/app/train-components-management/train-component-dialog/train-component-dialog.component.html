@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>
+  <div class="dialog-title">
+    <mat-icon>{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+    {{ title }}
+  </div>
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <!-- Name Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Component Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g., Engine, Wheel, Door">
+      <mat-icon matPrefix>label</mat-icon>
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <mat-error>{{ getErrorMessage('name') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Unique Number Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Unique Number</mat-label>
+      <input matInput formControlName="uniqueNumber" placeholder="e.g., ENG123, WHL101">
+      <mat-icon matPrefix>tag</mat-icon>
+      @if (form.controls.uniqueNumber.invalid && form.controls.uniqueNumber.touched) {
+        <mat-error>{{ getErrorMessage('uniqueNumber') }}</mat-error>
+      }
+      <mat-hint>Format: 2-3 uppercase letters + 3-4 digits</mat-hint>
+    </mat-form-field>
+
+    <!-- Can Assign Quantity Toggle -->
+    <div class="toggle-field">
+      <mat-slide-toggle formControlName="canAssignQuantity" color="primary">
+        Can assign quantity
+      </mat-slide-toggle>
+      <p class="toggle-hint">Enable if this component can have multiple units</p>
+    </div>
+
+    <!-- Quantity Field (conditional) -->
+    @if (showQuantityField()) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Quantity</mat-label>
+        <input matInput
+               type="number"
+               formControlName="quantity"
+               placeholder="Enter quantity"
+               appNonNegative
+               appInteger>
+        <mat-icon matPrefix>inventory</mat-icon>
+        @if (form.controls.quantity?.invalid && form.controls.quantity?.touched) {
+          <mat-error>{{ getErrorMessage('quantity') }}</mat-error>
+        }
+        <mat-hint>Number of units for this component</mat-hint>
+      </mat-form-field>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="onCancel()">
+    <mat-icon>close</mat-icon>
+    Cancel
+  </button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+    <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Save Changes' : 'Add Component' }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>
+  <div class="dialog-title">
+    <mat-icon>info</mat-icon>
+    Component Details
+  </div>
+</h2>
+
+<mat-dialog-content>
+  <div class="detail-container">
+    <div class="detail-row">
+      <span class="label">ID:</span>
+      <span class="value">{{ data.id }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Name:</span>
+      <span class="value strong">{{ data.name }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Unique Number:</span>
+      <span class="value">{{ data.uniqueNumber }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Can Assign Quantity:</span>
+      <span class="value">
+        <span class="badge" [class.badge-yes]="data.canAssignQuantity" [class.badge-no]="!data.canAssignQuantity">
+          {{ data.canAssignQuantity ? 'Yes' : 'No' }}
+        </span>
+      </span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">Quantity:</span>
+      <span class="value">
+        @if (data.quantity !== null) {
+          <span class="badge badge-quantity">{{ data.quantity }}</span>
+        } @else {
+          <span class="no-value">Not assigned</span>
+        }
+      </span>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="onClose()">
+    <mat-icon>close</mat-icon>
+    Close
+  </button>
+</mat-dialog-actions>

@@ -19,13 +19,15 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "public",
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "assets",
+                "output": "assets"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ]
           },
           "configurations": {
@@ -54,6 +56,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 37747
+          },
           "configurations": {
             "production": {
               "buildTarget": "TrainComponentManagementApp:build:production"

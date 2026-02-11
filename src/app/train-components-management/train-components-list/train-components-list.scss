@@ -1,0 +1,178 @@
+@import "../../../shared/styles/mixins";
+
+
+.loading-container {
+  color: #dddddd;
+  font-size: 1.1rem;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+
+  p {
+    padding: 0.25rem 0.5rem ;
+    backdrop-filter: brightness(0.3);
+    border-radius: 0.5rem;
+  }
+}
+
+/* Blur and dim table when loading */
+.relative:has(.loading-container) {
+  table , .mobile-list{
+    opacity: 0.3;
+    filter: blur(2px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+  }
+}
+
+table.mat-mdc-table {
+  width: 100%;
+
+  th, td {
+    color: #dddddd;
+  }
+
+  tr {
+    padding: 0 1rem;
+  }
+
+  th {
+    background-color: rgba(245, 245, 245, 0.1);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    font-size: 0.95rem;
+  }
+
+  td strong {
+    color: #64b5f6;
+  }
+
+  /* Column widths */
+  .mat-column-id {
+    @include strict-width(50px);
+  }
+
+  .mat-column-name {
+    @include strict-width(400px);
+  }
+
+  .mat-column-uniqueNumber {
+    @include strict-width(120px);
+  }
+
+  .mat-column-canAssignQuantity {
+    @include strict-width(100px);
+  }
+
+  .mat-column-quantity {
+    @include strict-width(100px);
+  }
+
+  .mat-column-actions {
+    @include strict-width(140px);
+  }
+}
+
+/* Chips */
+mat-chip {
+  font-size: 0.75rem;
+  font-weight: 500;
+  height: 24px;
+  padding: 0 8px;
+}
+
+.chip-yes {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.chip-no {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.quantity-chip {
+  background-color: #2196f3 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.no-quantity {
+  color: #999;
+  font-style: italic;
+}
+
+/* Action Buttons */
+td button {
+  margin: 0 4px;
+}
+
+mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Paginator */
+mat-paginator {
+  background-color: rgba(250, 250, 250, 0.05);
+  border-top: 1px solid rgba(224, 224, 224, 0.2);
+}
+
+/* No Data Row */
+.no-data-cell {
+  padding: 3rem 0 !important;
+  text-align: center;
+}
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #999;
+}
+
+.no-data-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.no-data-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #aaa;
+  margin: 0;
+}
+
+.no-data-subtext {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    padding: 8px 4px;
+  }
+}

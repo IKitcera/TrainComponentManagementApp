@@ -1,12 +1,14 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { TrainAnimationComponent } from './train-animation-component/train-animation.component';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [TrainAnimationComponent, RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss',
+  standalone: true
 })
-export class App {
-  protected readonly title = signal('TrainComponentManagementApp');
+export class AppComponent {
+  public hasInitialAnimationPlayed = signal(false);
 }

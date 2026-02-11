@@ -1,0 +1,97 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  min-width: 400px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+}
+
+.value {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+
+  &.strong {
+    font-weight: 600;
+    color: #64b5f6;
+    font-size: 1.1rem;
+  }
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.badge-yes {
+  background-color: #4caf50;
+  color: white;
+}
+
+.badge-no {
+  background-color: #f44336;
+  color: white;
+}
+
+.badge-quantity {
+  background-color: #2196f3;
+  color: white;
+  font-weight: 600;
+}
+
+.no-value {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+mat-dialog-actions {
+  padding: 1rem 1.5rem;
+
+  button {
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .detail-container {
+    min-width: 100%;
+  }
+}

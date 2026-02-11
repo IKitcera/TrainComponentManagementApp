@@ -1,0 +1,210 @@
+@let filter = filter$ | async;
+@let components = tableSource$ | async;
+
+<!-- Table Container -->
+<div class="overflow-auto relative rounded-md">
+
+  <!-- Loading Spinner -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <p>Loading components...</p>
+    </div>
+  }
+
+  <!-- Desktop Table View (hidden on mobile, visible on md and up) -->
+  <table mat-table
+         class="mat-elevation-z8 hidden md:table"
+         [dataSource]="tableSource$"
+         matSort
+         (matSortChange)="updateFilterWithSorting($event)" >
+
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let component">{{ component.id }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let component">
+        <strong>{{ component.name }}</strong>
+      </td>
+    </ng-container>
+
+    <!-- Unique Number Column -->
+    <ng-container matColumnDef="uniqueNumber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Unique Number</th>
+      <td mat-cell *matCellDef="let component">{{ component.uniqueNumber }}</td>
+    </ng-container>
+
+    <!-- Can Assign Quantity Column -->
+    <ng-container matColumnDef="canAssignQuantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Can Assign Qty</th>
+      <td mat-cell *matCellDef="let component">
+        <mat-chip [class.chip-yes]="component.canAssignQuantity"
+                  [class.chip-no]="!component.canAssignQuantity">
+          {{ component.canAssignQuantity ? 'Yes' : 'No' }}
+        </mat-chip>
+      </td>
+    </ng-container>
+
+    <!-- Quantity Column -->
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
+      <td mat-cell *matCellDef="let component">
+        @if (component.quantity !== null) {
+          <mat-chip class="quantity-chip">
+            {{ component.quantity }}
+          </mat-chip>
+        } @else {
+          <span class="no-quantity">-</span>
+        }
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let component">
+        <button mat-icon-button color="primary"
+                (click)="openViewDialog(component)"
+                matTooltip="View Details">
+          <mat-icon>visibility</mat-icon>
+        </button>
+
+        @if (isAdminMode()) {
+          <button mat-icon-button color="accent"
+                  (click)="openEditDialog(component)"
+                  [matTooltip]="'Edit component'">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button mat-icon-button color="warn"
+                  (click)="openDeleteDialog(component)"
+                  matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        } @else {
+          <button mat-icon-button color="accent"
+                  (click)="openAssignQuantityDialog(component)"
+                  [disabled]="!component.canAssignQuantity"
+                  [matTooltip]="'Assign Quantity'">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
+
+    <!-- No Data Row -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns().length">
+        <div class="no-data-container">
+          <mat-icon class="no-data-icon">inbox</mat-icon>
+          <p class="no-data-text">No train components found</p>
+          <p class="no-data-subtext">Try adjusting your search or filters</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Mobile List View (visible on mobile, hidden on md and up) -->
+  <div class="mobile-list md:hidden">
+    @if (components && components.length > 0) {
+      <div class="flex flex-col gap-4 p-4">
+        @for (component of components; track component.id) {
+          <div class="bg-white/5 rounded-lg overflow-hidden backdrop-blur-sm border border-white/10">
+            <!-- Header: Name and Code -->
+            <div class="bg-white/5 px-4 py-3 flex items-center justify-between border-b border-white/10">
+              <span class="text-lg font-bold text-blue-400">{{ component.name }}</span>
+              <span class="text-sm font-mono text-white/70">{{ component.uniqueNumber }}</span>
+            </div>
+
+            <!-- Details Section -->
+            <div class="px-4 py-3 space-y-2">
+              <!-- ID -->
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-white/50">Id</span>
+                <span class="text-sm font-semibold text-white/90">{{ component.id }}</span>
+              </div>
+
+              <!-- Can Assign Quantity -->
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-white/50">Can Assign Quantity</span>
+                <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium"
+                      [class]="component.canAssignQuantity ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'">
+                  {{ component.canAssignQuantity ? 'Yes' : 'No' }}
+                </span>
+              </div>
+
+              <!-- Quantity -->
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-white/50">Quantity</span>
+                @if (component.quantity !== null) {
+                  <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+                    {{ component.quantity }}
+                  </span>
+                } @else {
+                  <span class="text-white/30 text-sm">-</span>
+                }
+              </div>
+            </div>
+
+            <!-- Actions Section -->
+            <div class="px-4 py-3 bg-white/5 border-t border-white/10">
+              <div class="flex gap-2">
+                <button mat-stroked-button
+                        (click)="openViewDialog(component)"
+                        matTooltip="View Details"
+                        class="!text-blue-400 !border-blue-400/50 hover:!bg-blue-400/10">
+                  <mat-icon class="!text-base mr-1">visibility</mat-icon>
+                  View
+                </button>
+
+                <button mat-stroked-button
+                        (click)="openAssignQuantityDialog(component)"
+                        [disabled]="!component.canAssignQuantity"
+                        [matTooltip]="'Assign Quantity'"
+                        class="!text-purple-400 !border-purple-400/50 hover:!bg-purple-400/10 disabled:!opacity-50">
+                  <mat-icon class="!text-base mr-1">inventory</mat-icon>
+                  Assign
+                </button>
+
+                @if (isAdminMode()) {
+                  <button mat-stroked-button
+                          (click)="openDeleteDialog(component)"
+                          matTooltip="Delete"
+                          class="!text-red-400 !border-red-400/50 hover:!bg-red-400/10 !ml-auto">
+                    <mat-icon class="!text-base mr-1">delete</mat-icon>
+                    Delete
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (!isLoading()) {
+      <!-- No Data Message for Mobile -->
+      <div class="flex flex-col items-center justify-center p-8 text-center">
+        <mat-icon class="!w-16 !h-16 !text-6xl text-white/30 mb-4">inbox</mat-icon>
+        <p class="text-lg font-medium text-white/70 mb-2">No train components found</p>
+        <p class="text-sm text-white/50">Try adjusting your search or filters</p>
+      </div>
+    }
+  </div>
+
+  <!-- Paginator (shared for both views) -->
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 20, 50]"
+    [pageSize]="filter?.pageSize"
+    [pageIndex]="filter?.pageIndex"
+    [length]="totalItems()"
+    (page)="updateFilterWithPageInfo($event)"
+    showFirstLastButtons
+    aria-label="Select page of train components">
+  </mat-paginator>
+</div>
